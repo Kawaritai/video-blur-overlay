@@ -1,7 +1,7 @@
 .blur-overlay {
   position: absolute;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
+  background: rgba(60, 60, 60, 0.8);
+  backdrop-filter: blur(6px);
   z-index: 9999;
   user-select: none;
 }
@@ -14,12 +14,70 @@
 
 .resize-handle {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background: white;
-  border: 2px solid #666;
-  border-radius: 50%;
-  bottom: -7px;
-  right: -7px;
+  width: 40px;
+  height: 40px;
+  cursor: nwse-resize;
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: 2px solid white;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.resize-handle:hover::after {
+  opacity: 1;
+}
+
+/* Top-left corner */
+.resize-handle.top-left {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+}
+
+.resize-handle.top-left::after {
+  top: 0;
+  left: 0;
+}
+
+/* Top-right corner */
+.resize-handle.top-right {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+}
+
+.resize-handle.top-right::after {
+  top: 0;
+  right: 0;
+}
+
+/* Bottom-left corner */
+.resize-handle.bottom-left {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+}
+
+.resize-handle.bottom-left::after {
+  bottom: 0;
+  left: 0;
+}
+
+/* Bottom-right corner */
+.resize-handle.bottom-right {
+  bottom: 0;
+  right: 0;
   cursor: se-resize;
+}
+
+.resize-handle.bottom-right::after {
+  bottom: 0;
+  right: 0;
 }
