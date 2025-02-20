@@ -1,6 +1,6 @@
 .blur-overlay {
   position: absolute;
-  background: rgba(60, 60, 60, 0.8);
+  background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(6px);
   z-index: 9999;
   user-select: none;
