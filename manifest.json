@@ -2,13 +2,21 @@
   "manifest_version": 3,
   "name": "Video Blur Overlay",
   "version": "1.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "videobluroverlay@example.com"
+    }
+  },
+  "icons": {
+    "32": "icon-32.png"
+  },
   "description": "Add resizable blur overlays to YouTube and Twitch videos",
   "permissions": ["activeTab"],
   "action": {
     "default_title": "Toggle Blur Overlay"
   },
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
