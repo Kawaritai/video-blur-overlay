@@ -86,6 +86,70 @@
             margin: 16px 0;
             font-size: 14px;
         }
+        .config-section {
+            background: #f3f4f6;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+        }
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .tooltip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #9ca3af;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            cursor: help;
+            position: relative;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 12px;
+            z-index: 10;
+            max-width: 350px;
+            white-space: normal;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +159,84 @@
 
         <p>Remixed from <a href="https://claude.ai/public/artifacts/9c58fb4a-5fae-48ce-aed3-60355bfd033e">TTS Bookmarklet Generator</a> — sourced <a href="https://www.lesswrong.com/posts/dCjHGdnXF5vshYfBY/silentbob-s-shortform?commentId=Hfbd6BKbeqe3jnyDp">LW shortform</a>.</p>
         
-        <a href="javascript:(function(){if(window.__videoBlurOverlay){if(window.__videoBlurOverlay.parentElement){window.__videoBlurOverlay.remove()}window.__videoBlurOverlay=null;document.removeEventListener('mousemove',window.__handleMouseMove);document.removeEventListener('mouseup',window.__stopAction);return}const youtubeContainer=document.querySelector('.ytp-chrome-bottom')?.parentElement;const twitchContainer=document.querySelector('.video-player__container');const videoContainer=youtubeContainer||twitchContainer;if(!videoContainer)return;if(!document.getElementById('blur-overlay-styles')){const style=document.createElement('style');style.id='blur-overlay-styles';style.textContent='.blur-overlay{position:absolute;backdrop-filter:blur(20px);border:2px solid rgba(255,255,255,0.3);cursor:move;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3)}.blur-overlay-inner{width:100%;height:100%}.resize-handle{position:absolute;width:20px;height:20px;background:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.5);z-index:10000}.resize-handle.top-left{top:0px;left:0px;cursor:nw-resize}.resize-handle.top-right{top:0px;right:0px;cursor:ne-resize}.resize-handle.bottom-left{bottom:0px;left:0px;cursor:sw-resize}.resize-handle.bottom-right{bottom:0px;right:0px;cursor:se-resize}';document.head.appendChild(style)}window.__videoBlurOverlay=document.createElement('div');window.__videoBlurOverlay.className='blur-overlay';const inner=document.createElement('div');inner.className='blur-overlay-inner';window.__videoBlurOverlay.appendChild(inner);const corners=['top-left','top-right','bottom-left','bottom-right'];corners.forEach(corner=>{const handle=document.createElement('div');handle.className=`resize-handle ${corner}`;handle.dataset.corner=corner;window.__videoBlurOverlay.appendChild(handle)});const containerRect=videoContainer.getBoundingClientRect();window.__videoBlurOverlay.style.width='300px';window.__videoBlurOverlay.style.height=`${containerRect.height}px`;window.__videoBlurOverlay.style.left=`${containerRect.width/2-150}px`;window.__videoBlurOverlay.style.top='0px';let isMoving=false;let isResizing=false;let activeHandle=null;let initialMouseX=0;let initialMouseY=0;let initialOverlayX=0;let initialOverlayY=0;let startWidth=0;let startHeight=0;function startMove(e){if(e.target.classList.contains('resize-handle'))return;isMoving=true;const rect=window.__videoBlurOverlay.getBoundingClientRect();initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault()}function startResize(e,corner){isResizing=true;activeHandle=corner;const rect=window.__videoBlurOverlay.getBoundingClientRect();startWidth=rect.width;startHeight=rect.height;initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault();e.stopPropagation()}window.__handleMouseMove=function(e){if(!isMoving&&!isResizing)return;const containerRect=window.__videoBlurOverlay.parentElement.getBoundingClientRect();if(isMoving){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;let newLeft=initialOverlayX-containerRect.left+deltaX;let newTop=initialOverlayY-containerRect.top+deltaY;newLeft=Math.max(0,Math.min(newLeft,containerRect.width-window.__videoBlurOverlay.offsetWidth));newTop=Math.max(0,Math.min(newTop,containerRect.height-window.__videoBlurOverlay.offsetHeight));window.__videoBlurOverlay.style.left=`${newLeft}px`;window.__videoBlurOverlay.style.top=`${newTop}px`}if(isResizing){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;const minSize=50;let newWidth=startWidth;let newHeight=startHeight;let newLeft=initialOverlayX-containerRect.left;let newTop=initialOverlayY-containerRect.top;switch(activeHandle){case'top-left':newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newLeft+=startWidth-newWidth;newTop+=startHeight-newHeight;break;case'top-right':newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newTop+=startHeight-newHeight;break;case'bottom-left':newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight+deltaY);newLeft+=startWidth-newWidth;break;case'bottom-right':newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight+deltaY);break}newLeft=Math.max(0,Math.min(newLeft,containerRect.width-minSize));newTop=Math.max(0,Math.min(newTop,containerRect.height-minSize));newWidth=Math.min(newWidth,containerRect.width-newLeft);newHeight=Math.min(newHeight,containerRect.height-newTop);window.__videoBlurOverlay.style.width=`${newWidth}px`;window.__videoBlurOverlay.style.height=`${newHeight}px`;window.__videoBlurOverlay.style.left=`${newLeft}px`;window.__videoBlurOverlay.style.top=`${newTop}px`}};window.__stopAction=function(){isMoving=false;isResizing=false;activeHandle=null};window.__videoBlurOverlay.addEventListener('mousedown',startMove);window.__videoBlurOverlay.querySelectorAll('.resize-handle').forEach(handle=>{handle.addEventListener('mousedown',(e)=>startResize(e,handle.dataset.corner))});document.addEventListener('mousemove',window.__handleMouseMove);document.addEventListener('mouseup',window.__stopAction);videoContainer.appendChild(window.__videoBlurOverlay)})();" class="bookmarklet">Video Blur Toggle</a>
+        <div class="config-section">
+            <h3 style="margin-top: 0; margin-bottom: 16px;">Configuration</h3>
+            <div class="config-grid">
+                <div class="form-group">
+                    <label>
+                        Blur Intensity
+                        <span class="tooltip" data-tip="How blurred the overlay appears (higher = more blur)">?</span>
+                    </label>
+                    <select id="blurAmount">
+                        <option value="5">Light (5px)</option>
+                        <option value="10">Medium (10px)</option>
+                        <option value="15" selected>Heavy (15px)</option>
+                        <option value="20">Very Heavy (20px)</option>
+                        <option value="30">Maximum (30px)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Overlay Opacity
+                        <span class="tooltip" data-tip="Transparency of the dark overlay (0 = transparent, 100 = opaque)">?</span>
+                    </label>
+                    <select id="opacity">
+                        <option value="0.3">30%</option>
+                        <option value="0.5">50%</option>
+                        <option value="0.7">70%</option>
+                        <option value="0.8">80%</option>
+                        <option value="0.9" selected>90%</option>
+                        <option value="1.0">100%</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Color Tint
+                        <span class="tooltip" data-tip="Color tint for the overlay background">?</span>
+                    </label>
+                    <select id="colorTint">
+                        <option value="0,0,0" selected>Black</option>
+                        <option value="30,30,30">Dark Gray</option>
+                        <option value="20,20,40">Dark Blue</option>
+                        <option value="40,20,20">Dark Red</option>
+                        <option value="20,40,20">Dark Green</option>
+                        <option value="40,20,40">Dark Purple</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Default Width
+                        <span class="tooltip" data-tip="Starting width of the overlay when first created">?</span>
+                    </label>
+                    <select id="defaultWidth">
+                        <option value="200">Small (200px)</option>
+                        <option value="300" selected>Medium (300px)</option>
+                        <option value="400">Large (400px)</option>
+                        <option value="500">Extra Large (500px)</option>
+                        <option value="max">Max (Full Width)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Default Height
+                        <span class="tooltip" data-tip="Starting height of the overlay when first created">?</span>
+                    </label>
+                    <select id="defaultHeight">
+                        <option value="200">Small (200px)</option>
+                        <option value="300">Medium (300px)</option>
+                        <option value="400">Large (400px)</option>
+                        <option value="500">Extra Large (500px)</option>
+                        <option value="max" selected>Max (Full Height)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <a href="#" id="bookmarklet" class="bookmarklet">Video Blur Toggle</a>
         
         <div class="instructions">
             <h3>📚 How to Install</h3>
@@ -110,7 +251,7 @@
                 <li>Go to a YouTube or Twitch video</li>
                 <li>Click the bookmarklet to show blur overlay</li>
                 <li>Drag the overlay to move it around</li>
-                <li>Drag the inset corner areas to resize</li>
+                <li>Hover over corners to see resize handles, then drag to resize</li>
                 <li>Click bookmarklet again to hide overlay</li>
             </ol>
         </div>
@@ -118,9 +259,6 @@
         <div class="warning">
             <strong>Note:</strong> This bookmarklet only works on YouTube and Twitch video pages. The blur overlay will appear over the video player area.
         </div>
-
-        <h3>Raw Bookmarklet Code</h3>
-        <div class="code-block" id="code-display">javascript:(function(){if(window.__videoBlurOverlay){if(window.__videoBlurOverlay.parentElement){window.__videoBlurOverlay.remove()}window.__videoBlurOverlay=null;document.removeEventListener('mousemove',window.__handleMouseMove);document.removeEventListener('mouseup',window.__stopAction);return}const youtubeContainer=document.querySelector('.ytp-chrome-bottom')?.parentElement;const twitchContainer=document.querySelector('.video-player__container');const videoContainer=youtubeContainer||twitchContainer;if(!videoContainer)return;if(!document.getElementById('blur-overlay-styles')){const style=document.createElement('style');style.id='blur-overlay-styles';style.textContent='.blur-overlay{position:absolute;backdrop-filter:blur(20px);border:2px solid rgba(255,255,255,0.3);border-radius:8px;cursor:move;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3)}.blur-overlay-inner{width:100%;height:100%}.resize-handle{position:absolute;width:12px;height:12px;background:rgba(255,255,255,0.8);border:1px solid rgba(0,0,0,0.3);border-radius:50%;cursor:pointer;z-index:10000}.resize-handle.top-left{top:-6px;left:-6px;cursor:nw-resize}.resize-handle.top-right{top:-6px;right:-6px;cursor:ne-resize}.resize-handle.bottom-left{bottom:-6px;left:-6px;cursor:sw-resize}.resize-handle.bottom-right{bottom:-6px;right:-6px;cursor:se-resize}';document.head.appendChild(style)}window.__videoBlurOverlay=document.createElement('div');window.__videoBlurOverlay.className='blur-overlay';const inner=document.createElement('div');inner.className='blur-overlay-inner';window.__videoBlurOverlay.appendChild(inner);const corners=['top-left','top-right','bottom-left','bottom-right'];corners.forEach(corner=>{const handle=document.createElement('div');handle.className=`resize-handle ${corner}`;handle.dataset.corner=corner;window.__videoBlurOverlay.appendChild(handle)});const containerRect=videoContainer.getBoundingClientRect();window.__videoBlurOverlay.style.width='300px';window.__videoBlurOverlay.style.height=`${containerRect.height}px`;window.__videoBlurOverlay.style.left=`${containerRect.width/2-150}px`;window.__videoBlurOverlay.style.top='0px';let isMoving=false;let isResizing=false;let activeHandle=null;let initialMouseX=0;let initialMouseY=0;let initialOverlayX=0;let initialOverlayY=0;let startWidth=0;let startHeight=0;function startMove(e){if(e.target.classList.contains('resize-handle'))return;isMoving=true;const rect=window.__videoBlurOverlay.getBoundingClientRect();initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault()}function startResize(e,corner){isResizing=true;activeHandle=corner;const rect=window.__videoBlurOverlay.getBoundingClientRect();startWidth=rect.width;startHeight=rect.height;initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault();e.stopPropagation()}window.__handleMouseMove=function(e){if(!isMoving&&!isResizing)return;const containerRect=window.__videoBlurOverlay.parentElement.getBoundingClientRect();if(isMoving){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;let newLeft=initialOverlayX-containerRect.left+deltaX;let newTop=initialOverlayY-containerRect.top+deltaY;newLeft=Math.max(0,Math.min(newLeft,containerRect.width-window.__videoBlurOverlay.offsetWidth));newTop=Math.max(0,Math.min(newTop,containerRect.height-window.__videoBlurOverlay.offsetHeight));window.__videoBlurOverlay.style.left=`${newLeft}px`;window.__videoBlurOverlay.style.top=`${newTop}px`}if(isResizing){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;const minSize=50;let newWidth=startWidth;let newHeight=startHeight;let newLeft=initialOverlayX-containerRect.left;let newTop=initialOverlayY-containerRect.top;switch(activeHandle){case'top-left':newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newLeft+=startWidth-newWidth;newTop+=startHeight-newHeight;break;case'top-right':newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newTop+=startHeight-newHeight;break;case'bottom-left':newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight+deltaY);newLeft+=startWidth-newWidth;break;case'bottom-right':newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight+deltaY);break}newLeft=Math.max(0,Math.min(newLeft,containerRect.width-minSize));newTop=Math.max(0,Math.min(newTop,containerRect.height-minSize));newWidth=Math.min(newWidth,containerRect.width-newLeft);newHeight=Math.min(newHeight,containerRect.height-newTop);window.__videoBlurOverlay.style.width=`${newWidth}px`;window.__videoBlurOverlay.style.height=`${newHeight}px`;window.__videoBlurOverlay.style.left=`${newLeft}px`;window.__videoBlurOverlay.style.top=`${newTop}px`}};window.__stopAction=function(){isMoving=false;isResizing=false;activeHandle=null};window.__videoBlurOverlay.addEventListener('mousedown',startMove);window.__videoBlurOverlay.querySelectorAll('.resize-handle').forEach(handle=>{handle.addEventListener('mousedown',(e)=>startResize(e,handle.dataset.corner))});document.addEventListener('mousemove',window.__handleMouseMove);document.addEventListener('mouseup',window.__stopAction);videoContainer.appendChild(window.__videoBlurOverlay)})();</div>
     </div>
 </body>
 </html>
