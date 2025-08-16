@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="https://github.com/Kawaritai/video-blur-overlay/blob/main/icon-32.png?raw=true" type="image/png"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Blur Toggle Bookmarklet</title>
@@ -259,6 +258,149 @@
         <div class="warning">
             <strong>Note:</strong> This bookmarklet only works on YouTube and Twitch video pages. The blur overlay will appear over the video player area.
         </div>
+
+        <h3>Generated Bookmarklet Code</h3>
+        <div class="code-block" id="code-display"></div>
+    </div>
+
+    <script>
+        function generateBookmarklet() {
+            const blurAmount = document.getElementById('blurAmount').value;
+            const opacity = document.getElementById('opacity').value;
+            const colorTint = document.getElementById('colorTint').value;
+            const defaultWidth = document.getElementById('defaultWidth').value;
+            const defaultHeight = document.getElementById('defaultHeight').value;
+            
+            // Generate the minified bookmarklet code
+            const minified = `javascript:(function(){if(window.__videoBlurOverlay){if(window.__videoBlurOverlay.parentElement){window.__videoBlurOverlay.remove()}window.__videoBlurOverlay=null;document.removeEventListener("mousemove",window.__handleMouseMove);document.removeEventListener("mouseup",window.__stopAction);return}const youtubeContainer=document.querySelector(".ytp-chrome-bottom")?.parentElement;const twitchContainer=document.querySelector(".video-player__container");const videoContainer=youtubeContainer||twitchContainer;if(!videoContainer)return;if(!document.getElementById("blur-overlay-styles")){const style=document.createElement("style");style.id="blur-overlay-styles";style.textContent=".blur-overlay{position:absolute;background:rgba(${colorTint},${opacity});backdrop-filter:blur(${blurAmount}px);z-index:9999;user-select:none;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.3)}.blur-overlay-inner{width:100%;height:100%;cursor:move}.resize-handle{position:absolute;width:40px;height:40px;cursor:nwse-resize}.resize-handle::after{content:'';position:absolute;width:30px;height:30px;background:transparent;border:2px solid white;opacity:0;transition:opacity 0.2s}.resize-handle:hover::after{opacity:1}.resize-handle.top-left{top:0;left:0;cursor:nw-resize}.resize-handle.top-left::after{top:0;left:0}.resize-handle.top-right{top:0;right:0;cursor:ne-resize}.resize-handle.top-right::after{top:0;right:0}.resize-handle.bottom-left{bottom:0;left:0;cursor:sw-resize}.resize-handle.bottom-left::after{bottom:0;left:0}.resize-handle.bottom-right{bottom:0;right:0;cursor:se-resize}.resize-handle.bottom-right::after{bottom:0;right:0}";document.head.appendChild(style)}window.__videoBlurOverlay=document.createElement("div");window.__videoBlurOverlay.className="blur-overlay";const inner=document.createElement("div");inner.className="blur-overlay-inner";window.__videoBlurOverlay.appendChild(inner);const corners=["top-left","top-right","bottom-left","bottom-right"];corners.forEach(corner=>{const handle=document.createElement("div");handle.className="resize-handle "+corner;handle.dataset.corner=corner;window.__videoBlurOverlay.appendChild(handle)});const containerRect=videoContainer.getBoundingClientRect();const overlayWidth="${defaultWidth}"==="max"?containerRect.width:${defaultWidth};const overlayHeight="${defaultHeight}"==="max"?containerRect.height:${defaultHeight};window.__videoBlurOverlay.style.width=overlayWidth+"px";window.__videoBlurOverlay.style.height=overlayHeight+"px";const leftPos=Math.max(0,Math.min((containerRect.width-overlayWidth)/2,containerRect.width-overlayWidth));const topPos=Math.max(0,Math.min((containerRect.height-overlayHeight)/2,containerRect.height-overlayHeight));window.__videoBlurOverlay.style.left=leftPos+"px";window.__videoBlurOverlay.style.top=topPos+"px";let isMoving=false;let isResizing=false;let activeHandle=null;let initialMouseX=0;let initialMouseY=0;let initialOverlayX=0;let initialOverlayY=0;let startWidth=0;let startHeight=0;function startMove(e){if(e.target.classList.contains("resize-handle"))return;isMoving=true;const rect=window.__videoBlurOverlay.getBoundingClientRect();initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault()}function startResize(e,corner){isResizing=true;activeHandle=corner;const rect=window.__videoBlurOverlay.getBoundingClientRect();startWidth=rect.width;startHeight=rect.height;initialMouseX=e.clientX;initialMouseY=e.clientY;initialOverlayX=rect.left;initialOverlayY=rect.top;e.preventDefault();e.stopPropagation()}window.__handleMouseMove=function(e){if(!isMoving&&!isResizing)return;const containerRect=window.__videoBlurOverlay.parentElement.getBoundingClientRect();if(isMoving){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;let newLeft=initialOverlayX-containerRect.left+deltaX;let newTop=initialOverlayY-containerRect.top+deltaY;newLeft=Math.max(0,Math.min(newLeft,containerRect.width-window.__videoBlurOverlay.offsetWidth));newTop=Math.max(0,Math.min(newTop,containerRect.height-window.__videoBlurOverlay.offsetHeight));window.__videoBlurOverlay.style.left=newLeft+"px";window.__videoBlurOverlay.style.top=newTop+"px"}if(isResizing){const deltaX=e.clientX-initialMouseX;const deltaY=e.clientY-initialMouseY;const minSize=50;let newWidth=startWidth;let newHeight=startHeight;let newLeft=initialOverlayX-containerRect.left;let newTop=initialOverlayY-containerRect.top;switch(activeHandle){case"top-left":newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newLeft+=startWidth-newWidth;newTop+=startHeight-newHeight;break;case"top-right":newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight-deltaY);newTop+=startHeight-newHeight;break;case"bottom-left":newWidth=Math.max(minSize,startWidth-deltaX);newHeight=Math.max(minSize,startHeight+deltaY);newLeft+=startWidth-newWidth;break;case"bottom-right":newWidth=Math.max(minSize,startWidth+deltaX);newHeight=Math.max(minSize,startHeight+deltaY);break}newLeft=Math.max(0,Math.min(newLeft,containerRect.width-minSize));newTop=Math.max(0,Math.min(newTop,containerRect.height-minSize));newWidth=Math.min(newWidth,containerRect.width-newLeft);newHeight=Math.min(newHeight,containerRect.height-newTop);window.__videoBlurOverlay.style.width=newWidth+"px";window.__videoBlurOverlay.style.height=newHeight+"px";window.__videoBlurOverlay.style.left=newLeft+"px";window.__videoBlurOverlay.style.top=newTop+"px"}};window.__stopAction=function(){isMoving=false;isResizing=false;activeHandle=null};inner.addEventListener("mousedown",startMove);window.__videoBlurOverlay.querySelectorAll(".resize-handle").forEach(handle=>{handle.addEventListener("mousedown",(e)=>startResize(e,handle.dataset.corner))});document.addEventListener("mousemove",window.__handleMouseMove);document.addEventListener("mouseup",window.__stopAction);videoContainer.appendChild(window.__videoBlurOverlay)})();`;
+            
+            // Generate the formatted code for display
+            const formatted = `(function(){
+    // Check if overlay already exists and toggle it off
+    if(window.__videoBlurOverlay){
+        if(window.__videoBlurOverlay.parentElement){
+            window.__videoBlurOverlay.remove();
+        }
+        window.__videoBlurOverlay=null;
+        document.removeEventListener("mousemove",window.__handleMouseMove);
+        document.removeEventListener("mouseup",window.__stopAction);
+        return;
+    }
+    
+    // Find video container (YouTube or Twitch)
+    const youtubeContainer=document.querySelector(".ytp-chrome-bottom")?.parentElement;
+    const twitchContainer=document.querySelector(".video-player__container");
+    const videoContainer=youtubeContainer||twitchContainer;
+    
+    if(!videoContainer) return;
+    
+    // Add styles if not already present
+    if(!document.getElementById("blur-overlay-styles")){
+        const style=document.createElement("style");
+        style.id="blur-overlay-styles";
+        style.textContent=\`
+            .blur-overlay{
+                position:absolute;
+                background:rgba(${colorTint},${opacity});
+                backdrop-filter:blur(${blurAmount}px);
+                z-index:9999;
+                user-select:none;
+                border-radius:8px;
+                box-shadow:0 4px 20px rgba(0,0,0,0.3);
+            }
+            .blur-overlay-inner{
+                width:100%;
+                height:100%;
+                cursor:move;
+            }
+            .resize-handle{
+                position:absolute;
+                width:40px;
+                height:40px;
+                cursor:nwse-resize;
+            }
+            .resize-handle::after{
+                content:'';
+                position:absolute;
+                width:30px;
+                height:30px;
+                background:transparent;
+                border:2px solid white;
+                opacity:0;
+                transition:opacity 0.2s;
+            }
+            .resize-handle:hover::after{
+                opacity:1;
+            }
+            .resize-handle.top-left{top:0;left:0;cursor:nw-resize;}
+            .resize-handle.top-left::after{top:0;left:0;}
+            .resize-handle.top-right{top:0;right:0;cursor:ne-resize;}
+            .resize-handle.top-right::after{top:0;right:0;}
+            .resize-handle.bottom-left{bottom:0;left:0;cursor:sw-resize;}
+            .resize-handle.bottom-left::after{bottom:0;left:0;}
+            .resize-handle.bottom-right{bottom:0;right:0;cursor:se-resize;}
+            .resize-handle.bottom-right::after{bottom:0;right:0;}
+        \`;
+        document.head.appendChild(style);
+    }
+    
+    // Create overlay element with custom settings
+    // Blur: ${blurAmount}px, Opacity: ${parseFloat(opacity)*100}%, Color: rgb(${colorTint})
+    // Width: ${defaultWidth === 'max' ? 'Max' : defaultWidth + 'px'}, Height: ${defaultHeight === 'max' ? 'Max' : defaultHeight + 'px'}
+    window.__videoBlurOverlay=document.createElement("div");
+    window.__videoBlurOverlay.className="blur-overlay";
+    
+    const inner=document.createElement("div");
+    inner.className="blur-overlay-inner";
+    window.__videoBlurOverlay.appendChild(inner);
+    
+    // Add resize handles
+    const corners=["top-left","top-right","bottom-left","bottom-right"];
+    corners.forEach(corner=>{
+        const handle=document.createElement("div");
+        handle.className="resize-handle "+corner;
+        handle.dataset.corner=corner;
+        window.__videoBlurOverlay.appendChild(handle);
+    });
+    
+    // Set size and position (always centered, never overflows)
+    const containerRect=videoContainer.getBoundingClientRect();
+    const overlayWidth="${defaultWidth}"==="max"?containerRect.width:${defaultWidth};
+    const overlayHeight="${defaultHeight}"==="max"?containerRect.height:${defaultHeight};
+    
+    window.__videoBlurOverlay.style.width=overlayWidth+"px";
+    window.__videoBlurOverlay.style.height=overlayHeight+"px";
+    
+    // Center the overlay, ensuring no overflow
+    const leftPos=Math.max(0,Math.min((containerRect.width-overlayWidth)/2,containerRect.width-overlayWidth));
+    const topPos=Math.max(0,Math.min((containerRect.height-overlayHeight)/2,containerRect.height-overlayHeight));
+    window.__videoBlurOverlay.style.left=leftPos+"px";
+    window.__videoBlurOverlay.style.top=topPos+"px";
+    
+    // Movement and resize logic...
+    // [Additional functions truncated for display]
+    
+    // Add event listeners and append to container
+    videoContainer.appendChild(window.__videoBlurOverlay);
+})();`;
+            
+            // Update the bookmarklet link
+            document.getElementById('bookmarklet').href = minified;
+            
+            // Update the code display
+            document.getElementById('code-display').textContent = formatted;
+        }
+        
+        // Set up event listeners
+        document.getElementById('blurAmount').addEventListener('change', generateBookmarklet);
+        document.getElementById('opacity').addEventListener('change', generateBookmarklet);
+        document.getElementById('colorTint').addEventListener('change', generateBookmarklet);
+        document.getElementById('defaultWidth').addEventListener('change', generateBookmarklet);
+        document.getElementById('defaultHeight').addEventListener('change', generateBookmarklet);
+        
+        // Generate initial bookmarklet
+        generateBookmarklet();
+    </script>
     </div>
 </body>
 </html>
